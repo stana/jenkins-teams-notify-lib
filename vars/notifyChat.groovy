@@ -1,3 +1,5 @@
+import teamsnotify.TeamsRequest
+
 def call(String webhookGuid, String buildStatus, Map kwargs) {
     //
     // required - webhookGuid and buildStatus
@@ -22,40 +24,42 @@ def call(String webhookGuid, String buildStatus, Map kwargs) {
     def bad_color = "#CC4A31"
     //def resp
 
+    teams_req = new TeamsRequest(this, env)
+
     if (buildStatus == "STARTED") {
         if (!message) { message = "${env_name} job ${env.JOB_NAME}, build ${env.BUILD_NUMBER} started" }
         if (!summary) { summary = message }
         if (!color) { color = good_color }
         //resp = sendNotification webhookGuid, title, color, message, summary
-        sendNotification webhookGuid, title, color, message, summary
+        teams_req.sendNotification webhookGuid, title, color, message, summary
     }
     else if (buildStatus == "SUCCESS") {
         if (!message) { message = "${env_name} job ${env.JOB_NAME}, build ${env.BUILD_NUMBER} successful" }
         if (!summary) { summary = message }
         if (!color) { color = good_color }
         //resp = sendNotification webhookGuid, title, color, message, summary 
-        sendNotification webhookGuid, title, color, message, summary 
+        teams_req.sendNotification webhookGuid, title, color, message, summary
     }
     else if (buildStatus == "FAILURE" ) {
         if (!message) { message = "${env_name} job ${env.JOB_NAME}, build ${env.BUILD_NUMBER} failure" }
         if (!summary) { summary = message }
         if (!color) { color = bad_color }
-        //resp = sendNotification webhookGuid, title, color, message, summary 
-        sendNotification webhookGuid, title, color, message, summary 
+        //resp = sendNotification webhookGuid, title, color, message, summary
+        teams_req.sendNotification webhookGuid, title, color, message, summary
     }
     else if (buildStatus == "UNSTABLE" ) {
         if (!message) { message = "${env_name} job ${env.JOB_NAME}, build ${env.BUILD_NUMBER} unstable" }
         if (!summary) { summary = message }
         if (!color) { color = bad_color }
-        //resp = sendNotification webhookGuid, title, color, message, summary 
-        sendNotification webhookGuid, title, color, message, summary 
+        //resp = sendNotification webhookGuid, title, color, message, summary
+        teams_req.sendNotification webhookGuid, title, color, message, summary
     }
     else {
         if (!message) { message = "${env_name} job ${env.JOB_NAME}, build ${env.BUILD_NUMBER} result uknown" }
         if (!summary) { summary = message }
         if (!color) { color = bad_color }
-        //resp = sendNotification webhookGuid, title, color, message, summary 
-        sendNotification webhookGuid, title, color, message, summary 
+        //resp = sendNotification webhookGuid, title, color, message, summary
+        teams_req.sendNotification webhookGuid, title, color, message, summary
     }
     //return null
 }
