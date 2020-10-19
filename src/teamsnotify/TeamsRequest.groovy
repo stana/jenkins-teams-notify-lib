@@ -16,17 +16,22 @@ class TeamsRequest implements Serializable {
     def script
     def baseUrl
 
-    TeamsRequest(script, env) {
+    TeamsRequest(script, env, teamsGuid) {
         this.script = script
         this.env = env
         // Teams webhook format -  
         //     https://outlook.office.com/webhook/{guid}/IncomingWebhook/{webhook_guid}
-        this.baseUrl = "https://outlook.office.com/webhook/${env.TEAMS_GUID}"
+        if (!teamsGuid) {
+            teamsGuid = env.CHAT_ID
+        }
+        assert teamsGuid: "teamsGuid not set"
+        this.baseUrl = "https://outlook.office.com/webhook/${teamsGuid}"
     }
 
     private def getWebhookUrl(String webhookGuid) {
         if (!webhookGuid) {
-            webhookGuid = env.TEAMS_WEBHOOK_GUID
+            // channel/webhook id
+            webhookGuid = env.CHATROOM
         }
         return  "${this.baseUrl}/IncomingWebhook/${webhookGuid}"
     }

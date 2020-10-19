@@ -1,6 +1,6 @@
 import teamsnotify.TeamsRequest
 
-def call(String webhookGuid, String buildStatus, Map kwargs) {
+def call(String teamsGuid, String webhookGuid, String buildStatus, Map kwargs) {
     //
     // required - webhookGuid and buildStatus
     // optional - kwargs.title, kwargs.message, kwargs.color, kwargs.summary, kwargs.envName
@@ -24,7 +24,7 @@ def call(String webhookGuid, String buildStatus, Map kwargs) {
     def bad_color = "#CC4A31"
     //def resp
 
-    teams_req = new TeamsRequest(this, env)
+    teams_req = new TeamsRequest(this, env, teamsGuid)
 
     if (buildStatus == "STARTED") {
         if (!message) { message = "${env_name} job ${env.JOB_NAME}, build ${env.BUILD_NUMBER} started" }
