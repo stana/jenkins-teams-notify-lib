@@ -54,12 +54,11 @@ class TeamsRequest implements Serializable {
 
     private def getProxy() {
         def proxy
+        def proxy_url
         if (this.httpProxy) {
             this.script.println("Setting proxy obj from ${this.httpProxy}")
             proxy_url = new URL(httpProxy)
-            host = proxy_url.getHost()
-            port = proxy_url.getPort()
-            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxy_url.getHost(), proxy_url.getPort()));
         }
         return proxy
     }
