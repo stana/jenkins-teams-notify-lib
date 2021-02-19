@@ -17,6 +17,7 @@ class TeamsRequest implements Serializable {
     def env
     def script
     def baseUrl
+    def httpProxy
 
     TeamsRequest(script, env, teamsGuid) {
         this.script = script
@@ -28,7 +29,7 @@ class TeamsRequest implements Serializable {
         }
         assert teamsGuid: "teamsGuid not set"
         this.baseUrl = "https://outlook.office.com/webhook/${teamsGuid}"
-        this.httpProxy = System.getenv("http_proxy") ?: System.getenv("HTTP_PROXY")
+        this.httpProxy = env.http_proxy ?: env.HTTP_PROXY
     }
 
     private def getWebhookUrl(String webhookGuid) {
