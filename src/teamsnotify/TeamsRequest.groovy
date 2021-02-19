@@ -71,6 +71,7 @@ class TeamsRequest implements Serializable {
         this.script.println("Request message - ${payload}")
         // get proxy obj if needed
         def proxy = this.getProxy()
+        def conn
         if (proxy) {
             conn = new URL(url).openConnection(proxy)
         }
