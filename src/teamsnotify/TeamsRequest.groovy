@@ -10,6 +10,8 @@ import java.security.GeneralSecurityException;
 
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.Proxy;
+import java.net.InetSocketAddress;
 
 class TeamsRequest implements Serializable {
     def env
@@ -26,6 +28,7 @@ class TeamsRequest implements Serializable {
         }
         assert teamsGuid: "teamsGuid not set"
         this.baseUrl = "https://outlook.office.com/webhook/${teamsGuid}"
+        this.httpProxy = env.http_proxy ?: env.HTTP_PROXY
     }
 
     private def getWebhookUrl(String webhookGuid) {
@@ -48,13 +51,32 @@ class TeamsRequest implements Serializable {
         return result
     }
 
+    private def getProxy() {
+        def proxy
+        if (this.httpProxy) {
+            this.script.println("Setting proxy obj from ${this.httpProxy}")
+            proxy_url = new URL(httpProxy)
+            host = proxy_url.getHost()
+            port = proxy_url.getPort()
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+        }
+        return proxy
+    }
+
     private def sendRequest(String url, String payload) {
         //def resp_content
         //def resp_map
 
         this.script.println("Sending request to - ${url}")
         this.script.println("Request message - ${payload}")
-        def conn = new URL(url).openConnection()
+        // get proxy obj if needed
+        def proxy = this.getProxy()
+        if (proxy) {
+            conn = new URL(url).openConnection(proxy)
+        }
+        else {
+            conn = new URL(url).openConnection()
+        }
         conn.setConnectTimeout(6000) //6sec
         conn.setRequestProperty("Content-Type", "application/json")
         conn.setRequestProperty("Accept", "application/json")
