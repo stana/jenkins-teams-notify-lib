@@ -19,16 +19,25 @@ class TeamsRequest implements Serializable {
     def baseUrl
     def httpProxy
 
-    TeamsRequest(script, env, teamsGuid) {
+    TeamsRequest(script, env, baseUrl, teamsGuid) {
         this.script = script
         this.env = env
-        // Teams webhook format -  
+        // Teams webhook format example -
         //     https://outlook.office.com/webhook/{guid}/IncomingWebhook/{webhook_guid}
         if (!teamsGuid) {
             teamsGuid = env.CHAT_ID
         }
         assert teamsGuid: "teamsGuid not set"
+        // initialise base url to default
         this.baseUrl = "https://outlook.office.com/webhook/${teamsGuid}"
+        if (baseUrl) {
+            // received custom baseUrl
+            if (baseUrl.contains("webhook") {
+                this.baseUrl = "${baseUrl}/${teamsGuid}"
+            } else {
+                this.baseUrl = "${baseUrl}/webhook/${teamsGuid}"
+            }
+        }
         this.httpProxy = env.http_proxy ?: env.HTTP_PROXY
     }
 
