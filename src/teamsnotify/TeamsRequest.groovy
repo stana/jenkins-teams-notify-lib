@@ -32,7 +32,7 @@ class TeamsRequest implements Serializable {
         this.baseUrl = "https://outlook.office.com/webhook/${teamsGuid}"
         if (baseUrl) {
             // received custom baseUrl
-            if (baseUrl.contains("webhook") {
+            if (baseUrl.contains("webhook")) {
                 this.baseUrl = "${baseUrl}/${teamsGuid}"
             } else {
                 this.baseUrl = "${baseUrl}/webhook/${teamsGuid}"
